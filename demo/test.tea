@@ -1,0 +1,31 @@
+// Unit test program
+
+// Set r1 to 1
+addi r1, r0, 1
+// Set r2 to 2
+add r2, r1, r1
+// Set r3 to 3
+addi r3, r2, 1
+// Set r4 to 4
+mul r4, r2, r2
+// Set r5 to 5
+add r5, r2, r3
+// Store 4 to address 0
+sw r4, r0, 0
+// Store 5 to address 0
+sw r5, r2, -2
+// Overwrite to 0x0105
+sb r1, r3, -2
+// Load 0x105 into r6
+lw r6, r0, 0
+// Store 4 to address 0
+sw r4, r5, -5
+// Execute fence and query cycle counter
+fence
+// Set r7 to 3 and count it down to 1
+addi r7, r0, 3
+loop:
+    subi r7, r7, 1
+    bne r7, r1, loop
+    // Flush address 0
+    flush r0, 0

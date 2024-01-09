@@ -1,0 +1,13 @@
+addi r1, r0, 3
+slli r2, r1, 8
+addi r2, r2, 66
+sw r2, r0, 4
+lbu r4, r0, 5
+addi r3, r0, 33768
+lbu r3, r3, 1
+fence
+loop_label:
+	subi r4, r4, 1
+	beq r4, r0, loop_label
+rdtsc r0
+	

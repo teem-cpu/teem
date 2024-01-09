@@ -1,0 +1,35 @@
+// The negative value is extended into a protected address regardless of the
+// word size.
+lbu r1, r0, -16
+slli r1, r1, 4
+lbu r2, r1, 0x1000
+
+// Loop over the probe array, record the shortest access time:
+
+// Index of shortest access times 0x10
+addi r1, r0, 0
+// Time of shortest access
+addi r2, r0, -1
+// Current index times 0x10, begin at index 0x41
+addi r3, r0, 0x410
+// Probe array length times 0x10, end at index 0x43
+addi r4, r0, 0x440
+probe:
+
+// Perform timed access
+fence
+rdtsc r5
+lbu r7, r3, 0x1000
+fence
+rdtsc r6
+sub r5, r6, r5
+
+// Update shortest access
+bgeu r5, r2, skip
+addi r1, r3, 0
+addi r2, r5, 0
+skip:
+
+// Increment index and loop
+addi r3, r3, 0x10
+bne r3, r4, probe

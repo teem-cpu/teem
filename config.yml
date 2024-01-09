@@ -1,0 +1,45 @@
+BPU:
+    advanced: True
+    index_bits: 4
+    init_counter: 2
+
+Memory:
+    num_write_cycles: 5
+    num_fault_cycles: 8
+
+Cache:
+    sets: 4
+    ways: 4
+    line_size: 4
+    replacement_policy: LRU
+    cache_hit_cycles: 2
+    cache_miss_cycles: 5
+
+InstrQ:
+   size: 5
+
+ExecutionEngine:
+    slots: 8
+    regs: 32
+    retire_mode: strict
+
+UX:
+    show_empty_ways: True
+    show_empty_sets: False
+    show_empty_slots: True
+    reg_capitalisation: False
+
+    BreakAtFault:
+        branch: True
+        memory: True
+        jump: True
+        ebreak: True
+        ecall: False
+
+Mitigations:
+    illegal_read_return_zero: False
+
+Microprograms:
+    InstrLoad: None
+    InstrStore: None
+    InstrBranch: None

@@ -1,0 +1,14 @@
+// Unit test program
+
+// set R0 to 0
+andi r0, r0, 0
+// set R0 to 0xFF00
+addi r0, r0, 0xFF00
+// fence
+fence
+// load 0xFF00 into R1
+lw r1, r0, 0
+// fence
+fence
+// set R0 to 0
+andi r0, r0, 0

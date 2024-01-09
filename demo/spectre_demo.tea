@@ -1,0 +1,30 @@
+// Set up array at 0x1000, 8 elements, all 0x01
+addi r1, r0, 0x1000
+addi r2, r0, 0x01
+sb r2, r1, 0
+sb r2, r1, 1
+sb r2, r1, 2
+sb r2, r1, 3
+sb r2, r1, 4
+sb r2, r1, 5
+sb r2, r1, 6
+sb r2, r1, 7
+// Followed by one out-of-bounds 0x41 value
+addi r2, r0, 0x41
+sb r2, r1, 8
+
+fence
+
+// Loop over array, encode every value in cache
+addi r2, r0, 0
+addi r3, r0, 8
+loop:
+// Load array element
+lbu r4, r2, 0x1000
+// Encode value in cache
+slli r4, r4, 4
+lbu r4, r4, 0x2000
+// Increment loop index
+addi r2, r2, 1
+// Loop while index is in bounds
+bne r2, r3, loop

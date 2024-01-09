@@ -1,0 +1,58 @@
+// Set up array at 0x1000, 8 elements, all zeroes, followed by one out-of-bounds 0x41 value
+addi r1, r0, 0x1000
+sb r0, r1, 0
+sb r0, r1, 1
+sb r0, r1, 2
+sb r0, r1, 3
+sb r0, r1, 4
+sb r0, r1, 5
+sb r0, r1, 6
+sb r0, r1, 7
+addi r2, r0, 0x41
+sb r2, r1, 8
+
+// Loop over array, encode every value in cache
+addi r2, r0, 0
+addi r3, r0, 8
+loop:
+// Load array element
+lbu r4, r2, 0x1000
+// Encode value in cache
+slli r4, r4, 4
+lbu r4, r4, 0x2000
+// Increment loop index
+addi r2, r2, 1
+// Loop while index is in bounds
+bne r2, r3, loop
+
+// Although the out-of-bounds element was never accessed, the value 0x41 is encoded in the cache
+
+// Loop over the probe array, record the shortest access time:
+
+// Index of shortest access times 0x10
+addi r1, r0, 0
+// Time of shortest access
+addi r2, r0, -1
+// Current index times 0x10, begin at index 0x40
+addi r3, r0, 0x400
+// Probe array length times 0x10, end at index 0x42
+addi r4, r0, 0x430
+probe:
+
+// Perform timed access
+fence
+rdtsc r5
+lbu r7, r3, 0x2000
+fence
+rdtsc r6
+sub r5, r6, r5
+
+// Update shortest access
+bgeu r5, r2, skip
+addi r1, r3, 0
+addi r2, r5, 0
+skip:
+
+// Increment index and loop
+addi r3, r3, 0x10
+bne r3, r4, probe
