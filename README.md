@@ -1,5 +1,7 @@
 # TEEM - A CPU Emulator with Transient Execution
 
+[Open Access Paper: TEEM: A CPU Emulator for Teaching Transient Execution Attacks (2024)](https://doi.org/10.18420/sicherheit2024_013)
+
 [TEEM in Action: Exploring the Meltdown example](https://github.com/teem-cpu/teem/assets/13750291/248926e1-c0eb-466d-8c44-06fcdef33cb7)
 
 ## System requirements and installation
