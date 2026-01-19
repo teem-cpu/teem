@@ -85,7 +85,7 @@ def __status(input: list[str], cpu: CPU):
 @func
 def __show(input: list[str], cpu: CPU):
     '''
-    {"mem": None, "hexmem": None, "cache": None, "regs": None, "queue": None, "rs": None, "prog": None, "bpu": None}
+    {"mem": None, "hexmem": None, "cache": None, "regs": None, "queue": None, "rs": None, "prog": None, "bpu": None, "btb": None, "rsb": None}
     '''
     if len(input) < 1:
         __not_found(input, cpu)
